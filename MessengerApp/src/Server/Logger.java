@@ -1,3 +1,4 @@
+//Реальзация логгера сообщений с помощью циклической очереди
 package Server;
 
 import java.util.LinkedList;
