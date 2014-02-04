@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Main class for the server
+ * Listen for a connection and accepts it.
+ * When a new Client connects, Server creates a new thread 
+ */
 
 public class MServer {
 	
@@ -15,6 +20,11 @@ public class MServer {
 	private static ServerSocket ss;
 	private static int id = 0;
 	
+	/*
+	 * Users hash map
+	 * key - name
+	 * value - output stream
+	 */	
 	public static Map<String, ObjectOutputStream> users = new HashMap<String, ObjectOutputStream>();
 	public static Logger log = new Logger(10);
 	
@@ -31,9 +41,7 @@ public class MServer {
 				
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally { ss.close(); }
 	}
-
 }

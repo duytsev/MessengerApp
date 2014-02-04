@@ -10,6 +10,15 @@ import Msg.Message;
 import Msg.MessageUtils;
 import date_helpers.dateHelper;
 
+/*
+ * A Thread class for the server, provides connection between
+ * client and server
+ * Creates i/o streams for user
+ * Adds user to list
+ * Handles user messaging
+ * Finally closes streams and socket
+ */
+
 public class MServerThread implements Runnable {
 	private int id = 0;
 	private Socket socket = null;
@@ -19,15 +28,16 @@ public class MServerThread implements Runnable {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	
+	//Adds a new user to hash map
 	private void addUser() {
 		synchronized (MServer.users)  {
 			if (!MServer.users.containsKey(name)) {
 				MServer.users.put(name, oos);
 			}
-
 		}
 	}
 	
+	//Sends a message log to User
 	private void sendLog() throws IOException {
 		for(Message msg : MServer.log.getRawList()) {
 			oos.writeObject(msg);
@@ -42,10 +52,12 @@ public class MServerThread implements Runnable {
 	public void run() {    
 		
 		try {
-			
+			//Creating i/o streams
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos = new ObjectOutputStream(socket.getOutputStream());
-		
+			
+			
+			//Getting a first user message - new user connected
 			try {
 				msg = new Message();
 				msg = (Message) ois.readObject();
@@ -54,9 +66,12 @@ public class MServerThread implements Runnable {
 			}
 			
 			MServer.log.addMessage(msg);
-			
 			name = msg.getName();
 			
+			////////////////////////////////////
+			/*First, add a new user to hashmap 
+			 *Then we are updating userList in Message object and send this info to others
+			 */
 			synchronized (MServer.users)  {
 				if (!MServer.users.containsKey(name)) {
 					
@@ -74,33 +89,30 @@ public class MServerThread implements Runnable {
 						}
 					}
 					
-
 					sendLog();
 				}
 				else {
+					//name is already taken
 					Message err = new Message(MessageUtils.ERROR, name);
 					oos.writeObject(err);
 					oos.writeObject(null);
 				}
 			}
+			////////////////////////////////////
 			
-//			for(String name : MServer.users.keySet()) {
-//				msg.userList.add(name);
-//			}
-//			
-//			for (ObjectOutputStream writer : MServer.users.values()) {
-//				writer.writeObject(msg);
-//			}
-		
+			
+			/*Here we are handling a messages from user
+			 *If msg = null, then client disconnected
+			 */
 			try {
 				while ( (msg = (Message) ois.readObject()) != null) {
 					MServer.log.addMessage(msg);
-					if (msg.getType() == Msg.MessageUtils.DISCONNECTED) {
+					if (msg.getType() == Msg.MessageUtils.DISCONNECTED) { 	//if user disconnects
 						oos.writeObject(null);
-						synchronized (MServer.users) {
+						synchronized (MServer.users) { 						//removing user from hashmap
 							MServer.users.remove(msg.getName());
 						}
-						for(String name : MServer.users.keySet()) {
+						for(String name : MServer.users.keySet()) { 		//updating userlist
 							msg.userList.add(name);
 						}
 						
@@ -109,17 +121,15 @@ public class MServerThread implements Runnable {
 					else 
 						System.out.println(msg.getText());
 					
-					for (ObjectOutputStream writer : MServer.users.values()) {
+					for (ObjectOutputStream writer : MServer.users.values()) { //and then send a message to others
 						writer.writeObject(msg);
 					}
 				}
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		} catch ( IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		finally {
@@ -132,6 +142,4 @@ public class MServerThread implements Runnable {
 			}
 		}
 	}
-	
-
 }

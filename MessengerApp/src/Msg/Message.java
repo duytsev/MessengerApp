@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
+/*
+ * Message class implements Serializable to send
+ * its objects via objects streams
+ * Also it stores userList for GUI - every message contains an updated user list
+ */
 
 public class Message implements Serializable {
 	private int type = 0;

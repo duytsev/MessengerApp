@@ -29,7 +29,10 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-
+/*
+ * Client Swing GUI.
+ * It uses GridBagLayout as a Layout manager.
+ */
 
 public class Client_gui extends JFrame implements KeyListener {
 	
@@ -46,6 +49,9 @@ public class Client_gui extends JFrame implements KeyListener {
 	
 	public JList lstUserList;
 	
+	/*
+	 * Simple name checking using regular expressions.
+	 */
 	private boolean checkName(String name) {
 		
 		Pattern pt = Pattern.compile( "^[a-zA-Z][\\w]{2,9}$" );
@@ -57,7 +63,11 @@ public class Client_gui extends JFrame implements KeyListener {
 		JOptionPane.showMessageDialog(null, "Incorrect name!");
 	}
 	
-	private void showBox() throws IOException {
+	/*
+	 * Method that takes name and ip-adress via dialog window textfields,
+	 * checks them and start the client.
+	 */
+	private void showAuthBox() throws IOException {
 		JTextField tfName = new JTextField("<name>");
 		JTextField tfIPAdress = new JTextField("127.0.0.1");
 		
@@ -110,12 +120,11 @@ public class Client_gui extends JFrame implements KeyListener {
 		
 		
 		btnConnect = new JButton("Connect");
-		
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				try {
 					taInput.setText("");
-					showBox();
+					showAuthBox();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -131,7 +140,6 @@ public class Client_gui extends JFrame implements KeyListener {
 		getContentPane().add(btnConnect, gbc_btnConnect);
 		
 		btnDisconnect = new JButton("Disconnect");
-		
 		btnDisconnect.addActionListener(new ActionListener() { //TODO disconnect
 			public void actionPerformed(ActionEvent event) {
 				client.disconnect();
@@ -161,17 +169,13 @@ public class Client_gui extends JFrame implements KeyListener {
 		gbc_taOutput.gridy = 1;
 		gbc_taOutput.weighty = 1;
 		
-		JScrollPane scroll = new JScrollPane(taOutput); //обертка TextArea для прокрутки 
+		JScrollPane scroll = new JScrollPane(taOutput); 
 		getContentPane().add(scroll, gbc_taOutput);
-		
-		//getContentPane().add(taOutput, gbc_taOutput);
-		
+				
 		
 		listModel = new DefaultListModel();
 		lstUserList = new JList(listModel);
-		//lstUserList.setEditable(false);
 		lstUserList.setBorder(new CompoundBorder(new LineBorder(new Color(0, 0, 0)), new EmptyBorder(5, 5, 5, 5)));
-		//lstUserList.setLineWrap(true);
 		GridBagConstraints gbc_taUserList = new GridBagConstraints();
 		gbc_taUserList.weightx = 3.0;
 		gbc_taUserList.gridwidth = 2;
@@ -217,6 +221,9 @@ public class Client_gui extends JFrame implements KeyListener {
 
 	}
 	
+	/*
+	 * Sends a message and clears TextArea
+	 */
 	private void sendMessage() {
 		client.sendMsg(taInput.getText());
 		taInput.setText("");
@@ -247,7 +254,6 @@ public class Client_gui extends JFrame implements KeyListener {
 	
 	public static void main(String[] args) {
 		Client_gui app = new Client_gui();
-		//app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		app.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				if (client != null) client.disconnect();
@@ -266,14 +272,12 @@ public class Client_gui extends JFrame implements KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void keyTyped(KeyEvent e) {		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == e.VK_ENTER) e.consume();
-		if (e.isShiftDown() && e.getKeyCode() == e.VK_ENTER) taInput.setText("\n"); //TODO многострочный ввод через SHIFT
+		if (e.isShiftDown() && e.getKeyCode() == e.VK_ENTER) taInput.setText("\n"); //TODO multiline input
 	}
 }

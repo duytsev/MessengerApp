@@ -21,6 +21,12 @@ import Msg.MessageUtils;
 
 import date_helpers.dateHelper;
 
+/*
+ * Client class.
+ * Creates a socket and connects to the server.
+ * If the server accepts a connection then, 
+ * client creates i/o streams to send Message to the server.
+ */
 
 public class MClient {
 	
@@ -42,7 +48,9 @@ public class MClient {
 		this.name = name;
 		this.adress = adress;
 	}
-	
+	/*
+	 * Start method throw ConnectException for the GUI.
+	 */
 	public void Start() throws ConnectException {
 		try {
 			InetAddress ipAdress = InetAddress.getByName(adress);
@@ -68,13 +76,19 @@ public class MClient {
 		}
 	}
 	
-	
+	/*
+	 * Public method for GUI class.
+	 * It handling messages coming from the server in separate thread.
+	 */
 	public void listenMsg(JTextArea ta) throws IOException {
 		ml = new Thread(new MsgListener(socket, ois, oos, ta));
 		ml.start();
 	}
 	
-	
+	/*
+	 * Formates a message(attaching date etc.)
+	 * and send it to the server
+	 */
 	public void sendMsg(String inpStr) {
 		if(socket.isConnected()) {
 			Message m = new Message(MessageUtils.MSG, name);
@@ -86,17 +100,18 @@ public class MClient {
 			}			
 		}
 	}
+	
+	/*
+	 * Disconnect method.
+	 * Sends the last message with DISCONNECT status and then a null object.
+	 */
 	public void disconnect(){
 		try {
 			msg = new Message(MessageUtils.DISCONNECTED, name);
 			msg.setText(name + " disconnected" + "(" + dateHelper.getCurrentTime() + ")" );
 			oos.writeObject(msg);
 			oos.writeObject(null);
-			//ois.close();
-			//oos.close();
-			//socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

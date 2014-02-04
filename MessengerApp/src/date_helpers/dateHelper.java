@@ -5,6 +5,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+/*
+ * A class that returns current Date
+ * and current time(hour:min:sec)
+ */
+
 public class dateHelper {
 	
 	public static Date getDate() {

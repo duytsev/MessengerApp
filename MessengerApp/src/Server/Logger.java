@@ -1,9 +1,12 @@
-//Реальзация логгера сообщений с помощью циклической очереди
 package Server;
 
 import java.util.LinkedList;
 
 import Msg.Message;
+
+/*
+ * Message logger implementation using cyclic queue
+ */
 
 public class Logger {
 	

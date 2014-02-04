@@ -11,6 +11,13 @@ import Msg.Message;
 import Msg.MessageUtils;
 import date_helpers.dateHelper;
 
+/*
+ * A Thread class for the Client.
+ * It handling incoming messages from the server and prints it to the TextArea in GUI.
+ * I made this class implements Runnable, to avoid conflicts between sending and receiving messages,
+ * because method readObject occupies a thread.
+ * Also this class closes streams and socket in finally block.
+ */
 
 public class MsgListener implements Runnable {
 	
@@ -50,11 +57,9 @@ public class MsgListener implements Runnable {
 					
 				}
 			} catch (ClassNotFoundException e) {
-				System.out.println("!");
 				e.printStackTrace();
 			}
 		} catch (IOException e) {
-			System.out.println(" 1");
 			e.printStackTrace();
 		}
 		finally {
@@ -67,5 +72,4 @@ public class MsgListener implements Runnable {
 				}
 		}
 	}
-
 }

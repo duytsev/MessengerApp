@@ -1,5 +1,13 @@
 package Msg;
 
+/*
+ * Status consts for Message class
+ * MSG - just a message
+ * CONNECTED - new user connected
+ * DISCONNECTED - user disconnected
+ * ERROR - errors for example "name is already taken" etc
+ */
+
 public class MessageUtils {
 	public static final int MSG = 1;
 	public static final int CONNECTED = 2;
